@@ -9,8 +9,9 @@ import (
 	"sync"
 
 	"turtlesilicon/pkg/debug"
-	"turtlesilicon/pkg/paths" // Corrected import path
-	"turtlesilicon/pkg/utils" // Corrected import path
+	"turtlesilicon/pkg/paths"
+	"turtlesilicon/pkg/patching"
+	"turtlesilicon/pkg/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
@@ -195,6 +196,8 @@ func continueLaunch(myWindow fyne.Window, wowExePath string) {
 	if EnableMetalHud {
 		mtlHudValue = "1"
 	}
+
+	patching.EnsureGxApiD3d9(paths.TurtlewowPath)
 
 	// Prepare environment variables
 	envVars := fmt.Sprintf(`WINEDLLOVERRIDES="d3d9=n,b" MTL_HUD_ENABLED=%s MVK_CONFIG_SYNCHRONOUS_QUEUE_SUBMITS=1 DXVK_ASYNC=1`, mtlHudValue)

@@ -516,6 +516,16 @@ func updateOrAddConfigSetting(configText, setting, value string) string {
 	return configText
 }
 
+func EnsureGxApiD3d9(turtlewowPath string) {
+	configPath := filepath.Join(turtlewowPath, "WTF", "Config.wtf")
+	content, err := os.ReadFile(configPath)
+	if err != nil {
+		return
+	}
+	updated := updateOrAddConfigSetting(string(content), "gxApi", "d3d9")
+	os.WriteFile(configPath, []byte(updated), 0644)
+}
+
 // removeConfigSetting removes a setting from the config text
 func removeConfigSetting(configText, setting string) string {
 	// Create regex pattern to match the setting
