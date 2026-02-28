@@ -1,0 +1,46 @@
+[tools]
+go = "latest"
+
+[tasks.build]
+description = "Development build with debug symbols"
+run = """
+go install fyne.io/tools/cmd/fyne@latest
+GOOS=darwin GOARCH=arm64 fyne package
+mkdir -p TurtleSilicon.app/Contents/Resources/rosettax87
+mkdir -p TurtleSilicon.app/Contents/Resources/winerosetta
+cp -R rosettax87/* TurtleSilicon.app/Contents/Resources/rosettax87/
+cp -R winerosetta/* TurtleSilicon.app/Contents/Resources/winerosetta/
+mkdir -p TurtleSilicon.app/Contents/Resources/img/icons
+cp -R img/icons/* TurtleSilicon.app/Contents/Resources/img/icons/
+echo "Development build complete!"
+"""
+
+[tasks.release]
+description = "Optimized release build"
+run = """
+go install fyne.io/tools/cmd/fyne@latest
+CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build \
+  -ldflags="-s -w -X main.appVersion=$(grep Version FyneApp.toml | cut -d'"' -f2)" \
+  -trimpath \
+  -tags=release \
+  -o turtlesilicon .
+GOOS=darwin GOARCH=arm64 fyne package --release --executable turtlesilicon
+mkdir -p TurtleSilicon.app/Contents/Resources/rosettax87
+mkdir -p TurtleSilicon.app/Contents/Resources/winerosetta
+mkdir -p TurtleSilicon.app/Contents/Resources/img/icons
+cp -R rosettax87/* TurtleSilicon.app/Contents/Resources/rosettax87/
+cp -R winerosetta/* TurtleSilicon.app/Contents/Resources/winerosetta/
+mkdir -p TurtleSilicon.app/Contents/Resources/img/icons
+cp -R img/icons/* TurtleSilicon.app/Contents/Resources/img/icons/
+strip -x TurtleSilicon.app/Contents/MacOS/turtlesilicon
+echo "Optimized release build complete!"
+"""
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = "rm -rf TurtleSilicon.app TurtleSilicon.dmg turtlesilicon"
+
+[tasks.run]
+description = "Build and run"
+depends = ["build"]
+run = "open TurtleSilicon.app"

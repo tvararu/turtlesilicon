@@ -6,3 +6,6 @@ TurtleSilicon.*
 TurtleSilicon.app/Contents/MacOS/turtlesilicon
 *.dmg
 turtlesilicon
+.claude/*.local.json
+tmp/*
+!tmp/.keep
